@@ -8,13 +8,11 @@ import net.minecraft.server.command.CommandManager;
 public class AxonCommandRegistrar {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager.literal("axon")
+            dispatcher.register(CommandManager.literal("a")
                     .then(CommandManager.argument("message", StringArgumentType.greedyString())
                             .executes(new PromptCommand())
                     )
             );
-        });
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("axon-clear")
                     .executes(new ClearCommand())
             );

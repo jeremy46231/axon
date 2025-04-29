@@ -12,10 +12,12 @@ public class AxonClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static void chatMessage(String message) {
-        var client = MinecraftClient.getInstance();
-        if (client != null && client.player != null) {
-            client.player.sendMessage(Text.of(message.trim()), false);
-        }
+        MinecraftClient.getInstance().execute(() -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null && client.player != null) {
+                client.player.sendMessage(Text.of(message.trim()), false);
+            }
+        });
     }
 
     @Override
