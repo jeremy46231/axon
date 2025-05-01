@@ -22,7 +22,7 @@ public class CommandRegistrar {
                             .executes(new PromptCommand())
                     )
             );
-            dispatcher.register(CommandManager.literal("axon-clear")
+            dispatcher.register(CommandManager.literal("a-clear")
                     .executes(new ClearCommand())
             );
         });

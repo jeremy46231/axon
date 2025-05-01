@@ -35,7 +35,11 @@ public class Utils {
             if (position != null) {
                 return position;
             } else if (waypoint != null) {
-                throw new IllegalArgumentException("Waypoint is not supported yet");
+                BetterBlockPos waypointPos = BaritoneService.getWaypointPos(waypoint);
+                if (waypointPos == null) {
+                    throw new IllegalArgumentException("Waypoint not found: " + waypoint);
+                }
+                return new CoordinateXZ(waypointPos.x, waypointPos.z);
             } else {
                 BetterBlockPos playerPosition = BaritoneService.getPlayerPos();
                 return new CoordinateXZ(playerPosition.x, playerPosition.z);
@@ -62,7 +66,11 @@ public class Utils {
             if (position != null) {
                 return new BetterBlockPos(position.x, position.y, position.z);
             } else if (waypoint != null) {
-                throw new IllegalArgumentException("Waypoint is not supported yet");
+                BetterBlockPos waypointPos = BaritoneService.getWaypointPos(waypoint);
+                if (waypointPos == null) {
+                    throw new IllegalArgumentException("Waypoint not found: " + waypoint);
+                }
+                return waypointPos;
             } else {
                 return BaritoneService.getPlayerPos();
             }
@@ -91,7 +99,11 @@ public class Utils {
             if (position != null) {
                 return position;
             } else if (waypoint != null) {
-                throw new IllegalArgumentException("Waypoint is not supported yet");
+                BetterBlockPos waypointPos = BaritoneService.getWaypointPos(waypoint);
+                if (waypointPos == null) {
+                    throw new IllegalArgumentException("Waypoint not found: " + waypoint);
+                }
+                return new CoordinateXZOptionalY(waypointPos.x, waypointPos.y, waypointPos.z);
             } else {
                 BetterBlockPos coordinates = BaritoneService.getPlayerPos();
                 return new CoordinateXZOptionalY(coordinates.x, coordinates.y, coordinates.z);

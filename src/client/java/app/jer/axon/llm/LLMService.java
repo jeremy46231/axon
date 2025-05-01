@@ -57,7 +57,9 @@ public class LLMService {
                         
                         Make assumptions on behalf of the user, assume reasonable defaults and avoid asking clarifying \
                         questions if at all possible. Be concise and efficient in your responses, but if there is a \
-                        clear next step, you can offer to do it.
+                        clear next step, you can offer to do it. The exception to this is if the user asks you about \
+                        yourself or your capabilities, in which case you should be more verbose and explain your \
+                        features in detail.
                         
                         Current Status (always up-to-date):
                         %s
@@ -99,7 +101,7 @@ public class LLMService {
 
         // Send messages to LLM
         ChatRequest chatRequest = ChatRequest.builder()
-                .model("gemini-2.0-flash") // ("gemini-2.5-pro-exp-03-25")
+                .model("gemini-2.0-flash") // "gemini-2.5-pro-exp-03-25"
                 .messages(currentMessages)
                 .tools(functionExecutor.getToolFunctions())
                 .temperature(0.0)

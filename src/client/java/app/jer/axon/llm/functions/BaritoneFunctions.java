@@ -15,71 +15,66 @@ import io.github.sashirestela.openai.common.function.Functional;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
-import java.util.stream.Collectors;
-
 public class BaritoneFunctions {
     public static void enrollFunctions(FunctionExecutor functionExecutor) {
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_stop")
-                        .description("Stop the current Baritone process")
-                        .functionalClass(StopTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_goto")
-                        .description("Navigate to a given location")
-                        .functionalClass(GotoTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_goto_y")
-                        .description("Navigate to a given y level")
-                        .functionalClass(GotoYTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_mine")
-                        .description("Locate and mine a specific amount of the specified block (this process will " +
-                                "stop once enough of the block/item has been collected)")
-                        .functionalClass(MiningTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_explore")
-                        .description("Move near uncached chunks around the specified coordinates to load them into " +
-                                "Baritone's cache, so it can pathfind outside of the render distance more" +
-                                "effectively (this process will not stop until you stop it)")
-                        .functionalClass(ExploreTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_follow")
-                        .description("Follow a mob or entity (this process will not stop until you stop it)")
-                        .functionalClass(FollowTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("baritone_farm")
-                        .description("Automatically farm and replant crops in a specified area (this process will not" +
-                                "stop until you stop it)")
-                        .functionalClass(FarmTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
-
-        functionExecutor.enrollFunction(
-                FunctionDef.builder()
-                        .name("waypoint_list")
-                        .description("List all saved waypoints")
-                        .functionalClass(WaypointListTool.class)
-                        .strict(Boolean.TRUE)
-                        .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_stop")
+                .description("Stop the current Baritone process")
+                .functionalClass(StopTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_goto")
+                .description("Navigate to a given location")
+                .functionalClass(GotoTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_goto_y")
+                .description("Navigate to a given y level")
+                .functionalClass(GotoYTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_mine")
+                .description("Locate and mine a specific amount of the specified block (this process will " +
+                        "stop once enough of the block/item has been collected)")
+                .functionalClass(MiningTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_explore")
+                .description("Move near uncached chunks around the specified coordinates to load them into " +
+                        "Baritone's cache, so it can pathfind outside of the render distance more" +
+                        "effectively (this process will not stop until you stop it)")
+                .functionalClass(ExploreTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_follow")
+                .description("Follow a mob or entity (this process will not stop until you stop it)")
+                .functionalClass(FollowTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_farm")
+                .description("Automatically farm and replant crops in a specified area (this process will not" +
+                        "stop until you stop it)")
+                .functionalClass(FarmTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_waypoint_add")
+                .description("Add a saved waypoint at the specified coordinates")
+                .functionalClass(WaypointAddTool.class)
+                .strict(Boolean.TRUE)
+                .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_waypoint_remove")
+                .description("Remove a saved waypoint at the specified coordinates")
+                .functionalClass(WaypointRemoveTool.class)
+                .strict(Boolean.TRUE)
+                .build());
     }
 
     static class StopTool implements Functional {
@@ -177,7 +172,7 @@ public class BaritoneFunctions {
                         }
                         return false;
                     });
-                    return "Baritone is now following " + String.join(", ", targets);
+                    return "Baritone is now following users " + String.join(", ", targets);
                 }
                 BaritoneService.follow(s -> {
                     for (String target : targets) {
@@ -221,19 +216,36 @@ public class BaritoneFunctions {
         }
     }
 
-    static class WaypointListTool implements Functional {
+    static class WaypointAddTool implements Functional {
+        @JsonPropertyDescription("The name of the waypoint")
+        @JsonProperty(required = true)
+        public String name;
+
+        @JsonPropertyDescription("The position of the waypoint " +
+                "(leave empty to default to the player's current position)")
+        @JsonProperty(required = true)
+        public Utils.LocationXYZ position;
+
         @Override
         public String execute() {
-            var waypoints = BaritoneService.getAllWaypoints();
-            return waypoints.stream()
-                    .map(waypoint -> String.format(
-                            "%s: XYZ %s %s %s",
-                            waypoint.getName(),
-                            waypoint.getLocation().x,
-                            waypoint.getLocation().y,
-                            waypoint.getLocation().z
-                    ))
-                    .collect(Collectors.joining(", "));
+            BetterBlockPos coordinates = position.getCoordinates();
+            BaritoneService.addWaypoint(name, coordinates);
+            return "Baritone has added a waypoint called '" + name + "' at XYZ " + coordinates.x + ", " + coordinates.y + ", " + coordinates.z;
+        }
+    }
+    static class WaypointRemoveTool implements Functional {
+        @JsonPropertyDescription("The exact name of the waypoint to remove")
+        @JsonProperty(required = true)
+        public String name;
+
+        @Override
+        public String execute() {
+            BetterBlockPos oldPos = BaritoneService.getWaypointPos(name);
+            if (oldPos == null) {
+                return "Error: Baritone has no waypoint called '" + name + "'";
+            }
+            BaritoneService.removeWaypoint(name);
+            return "Baritone has removed the waypoint called '" + name + "' at XYZ " + oldPos.x + ", " + oldPos.y + ", " + oldPos.z;
         }
     }
 }

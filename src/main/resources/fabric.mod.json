@@ -15,20 +15,11 @@
   "icon": "assets/axon/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "app.jer.axon.Axon"
-    ],
     "client": [
-      "app.jer.axon.AxonClient"
+      "app.jer.axon.Axon"
     ]
   },
-  "mixins": [
-    "axon.mixins.json",
-    {
-      "config": "axon.client.mixins.json",
-      "environment": "client"
-    }
-  ],
+  "mixins": [],
   "depends": {
     "fabricloader": ">=0.16.13",
     "minecraft": "~1.21.4",

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class BaritoneService {
     private static final IBaritone baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
@@ -26,27 +27,30 @@ public class BaritoneService {
 
     public static String getTextStatus() {
         IBaritoneProcess process = baritone.getPathingControlManager().mostRecentInControl().orElse(null);
-        if (process == null || !process.isActive()) {
-            return "Baritone status: Idle";
+        String processStatus = (process == null || !process.isActive())
+                ? "Idle"
+                : "Active, current process: " + process.displayName();
+
+        String waypoints = getAllWaypoints().stream()
+                .map(waypoint -> String.format(
+                        "%s: XYZ %s %s %s",
+                        waypoint.getName(),
+                        waypoint.getLocation().x,
+                        waypoint.getLocation().y,
+                        waypoint.getLocation().z
+                ))
+                .collect(Collectors.joining(", "));
+        if (waypoints.isEmpty()) {
+            waypoints = "No waypoints";
         }
-        String processName = process.displayName();
-/*
-        IPathingBehavior pathingBehavior = baritone.getPathingBehavior();
-        String goal = Optional.ofNullable(pathingBehavior.getGoal()).toString();
 
-        String status = (pathingBehavior.hasPath()
-                ? pathingBehavior.isPathing() ? "Pathing" : "Current path paused"
-                : "Stationary") +
-                (pathingBehavior.getInProgress().isPresent() ? " (running pathfinding algorithm)" : "");
-
-        double ticksRemainingInGoal = pathingBehavior.estimatedTicksToGoal().orElse(Double.NaN);
-        String goalRemaining = String.format("%.1fs (%.0f ticks)", ticksRemainingInGoal / 20, ticksRemainingInGoal);
-*/
         return String.format(
                 """
-                        Baritone status: Active
-                        Current Baritone process: %s""",
-                processName
+                        Baritone status: %s
+                        Baritone waypoints: %s""",
+                processStatus,
+                waypoints
+
         );
     }
 
@@ -72,6 +76,7 @@ public class BaritoneService {
     public static void explore(int x, int z) {
         baritone.getExploreProcess().explore(x, z);
     }
+
     public static void explore() {
         BetterBlockPos position = getPlayerPos();
         baritone.getExploreProcess().explore(
@@ -95,9 +100,11 @@ public class BaritoneService {
     public static IWaypointCollection waypointCollection() {
         return baritone.getWorldProvider().getCurrentWorld().getWaypoints();
     }
+
     public static Set<IWaypoint> getAllWaypoints() {
-        return waypointCollection().getAllWaypoints();
+        return waypointCollection().getByTag(IWaypoint.Tag.USER);
     }
+
     public static @Nullable IWaypoint getWaypoint(String name) {
         Set<IWaypoint> waypoints = getAllWaypoints();
         Optional<IWaypoint> matchingWaypoint = waypoints.stream()
@@ -105,6 +112,7 @@ public class BaritoneService {
                 .findFirst();
         return matchingWaypoint.orElse(null);
     }
+
     public static @Nullable BetterBlockPos getWaypointPos(String name) {
         IWaypoint waypoint = getWaypoint(name);
         if (waypoint != null) {
@@ -112,17 +120,15 @@ public class BaritoneService {
         }
         return null;
     }
-    public static boolean removeWaypoint(String name) {
+
+    public static void removeWaypoint(String name) {
         Set<IWaypoint> waypoints = getAllWaypoints();
         Optional<IWaypoint> matchingWaypoint = waypoints.stream()
                 .filter(waypoint -> waypoint.getName().equals(name))
                 .findFirst();
-        if (matchingWaypoint.isPresent()) {
-            waypointCollection().removeWaypoint(matchingWaypoint.get());
-            return true;
-        }
-        return false;
+        matchingWaypoint.ifPresent(iWaypoint -> waypointCollection().removeWaypoint(iWaypoint));
     }
+
     public static void addWaypoint(String name, BlockPos pos) {
         removeWaypoint(name);
         waypointCollection().addWaypoint(new Waypoint(name, IWaypoint.Tag.USER, BetterBlockPos.from(pos)));
