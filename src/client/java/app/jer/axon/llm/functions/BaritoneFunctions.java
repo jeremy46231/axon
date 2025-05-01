@@ -75,6 +75,13 @@ public class BaritoneFunctions {
                 .functionalClass(WaypointRemoveTool.class)
                 .strict(Boolean.TRUE)
                 .build());
+        functionExecutor.enrollFunction(FunctionDef.builder()
+                .name("baritone_process_wait")
+                .description("Wait until the current Baritone process is finished (make sure to inform the user " +
+                        "about the current process before waiting until it finishes)")
+                .functionalClass(ProcessWaitTool.class)
+                .strict(Boolean.TRUE)
+                .build());
     }
 
     static class StopTool implements Functional {
@@ -246,6 +253,36 @@ public class BaritoneFunctions {
             }
             BaritoneService.removeWaypoint(name);
             return "Baritone has removed the waypoint called '" + name + "' at XYZ " + oldPos.x + ", " + oldPos.y + ", " + oldPos.z;
+        }
+    }
+
+    static class ProcessWaitTool implements Functional {
+        @JsonPropertyDescription("The maximum amount of time to wait for the process to finish (in seconds). " +
+                "When the time is up, the process will not be stopped, but you will have a chance to reevaluate " +
+                "the current status and decide whether to continue waiting or stop the process.")
+        @JsonProperty(required = true)
+        public long timeout;
+
+        @Override
+        public String execute() {
+            if (!BaritoneService.isActive()) {
+                return "Error: The Baritone process is not active";
+            }
+            long elapsedTime = 0;
+            while (elapsedTime < timeout) {
+                if (!BaritoneService.isActive()) {
+                    return "The Baritone process has finished after " + elapsedTime + " seconds. You can now decide " +
+                            "whether the process was successful or not and choose what to do next.";
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                elapsedTime++;
+            }
+            return "The Baritone process is still active after " + timeout + " seconds. You can reevaluate the status" +
+                    " and decide whether to continue waiting or stop the process.";
         }
     }
 }
