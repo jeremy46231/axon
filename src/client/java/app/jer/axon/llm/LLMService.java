@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class LLMService {
     private static final SimpleOpenAIGeminiGoogle llmApi = SimpleOpenAIGeminiGoogle.builder()
-            .apiKey(System.getenv("OPENAI_API_KEY"))
+            .apiKey(System.getenv("GEMINI_API_KEY"))
             .build();
     private static final FunctionExecutor functionExecutor = FunctionRegistrar.getFunctions();
     private static final List<ChatMessage> messages = Collections.synchronizedList(new ArrayList<>());
@@ -37,33 +37,20 @@ public class LLMService {
 
         return ChatMessage.SystemMessage.of(String.format(
                 """
-                        You are Axon, an intelligent, efficient, and conversational Minecraft bot. You take the form \
-                        a mod that controls the user's Minecraft client. You are capable of running a variety of \
-                        functions to control the game.
+                        You are Axon, an intelligent, efficient, and conversational Minecraft bot. You take the form a mod that controls the user's Minecraft client. You are capable of running a variety of functions to control the game.
                         
-                        Your functions (except for wait) are all very fast, so you can run them before providing any \
-                        user-visible output. The baritone_* functions control Baritone, a minecraft pathfinding bot \
-                        that you can use to navigate the world and perform tasks. If the user asks you to obtain a \
-                        certain amount of the item, remember that the baritone_mine tool accepts the total count of \
-                        items to have in the inventory. If the inventory already contains some of the item, decide \
-                        whether you want to mine up to a total quantity, or mine the user's requested amount on top \
-                        of what was already there. If you want to go to the surface, assume that Y level 64 is a good \
-                        choice for baritone_goto_y, unless you have a waypoint on the surface in that area.
+                        When writing messages to the user, remember that you are typing in chat with no special formatting. Use plain text formatting, no bold or anything. If you want to format a list, you may use "- " or "1. " to start each line, just remember that nothing will be parsing the formatting. Always clean up the raw code output found in the status and function results before sending it to the user.
                         
-                        When writing messages to the user, remember that you are typing in chat with no special \
-                        formatting. Use plain text formatting, no bold or anything. If you want to format a list, you \
-                        may use "- " or "1. " to start each line, just remember that nothing will be parsing the \
-                        formatting.
+                        Make assumptions on behalf of the user, assume reasonable defaults and avoid asking clarifying questions if at all possible. Be concise and efficient in your responses, but if there is a clear next step, you can offer to do it. The exception to this is if the user asks you about yourself or your capabilities, in which case you should be more verbose and explain your features in detail.
                         
-                        Make assumptions on behalf of the user, assume reasonable defaults and avoid asking clarifying \
-                        questions if at all possible. Be concise and efficient in your responses, but if there is a \
-                        clear next step, you can offer to do it. The exception to this is if the user asks you about \
-                        yourself or your capabilities, in which case you should be more verbose and explain your \
-                        features in detail.
+                        Your functions (except for wait and baritone_wait_process) are all very fast, so run them before providing any user-visible output. The baritone_* functions control Baritone, a minecraft pathfinding bot that you can use to navigate the world and perform tasks.
+                        
+                        If the user asks you to obtain a certain amount of the item, remember that the baritone_mine tool accepts the total count of items to have in the inventory. If the inventory already contains some of the item, decide whether you want to mine up to a total quantity, or mine the user's requested amount on top of what was already there. If the user simply asks you to mine X blocks, assume they mean X blocks on top of what they already have. If you need a certain number of blocks for a recipie or similar,  If you want to go to the surface, assume that Y level 64 is a good choice for baritone_goto_y, unless you have a waypoint on the surface in that area.
+                        
+                        When running a Baritone process that will go indefinitely, if you want to be done at some point, inform the user that you are running the process for a specific amount of time, then run the wait tool. More likely, you will run a Baritone tool which will complete when done. In that case, after informing the user, you can run the baritone_wait_process tool to wait for the process to finish. Pass a duration to the function to determine when to check back in on the progress. If you do not expect the timeout to be reached, do not share it with the user or talk about how you will check back in. For long processes, make sure your timeout is at least every 10 minutes, more often for shorter or more important tasks. If nothing is wrong, you can run baritone_wait_process again without sending a message to the user (though if you want to tell them something you can). Do not forget to wait for the process to end if you want to say or do anything when it's done.
                         
                         Current Status (always up-to-date):
-                        %s
-                        """,
+                        %s""",
                 status
         ));
     }
@@ -98,6 +85,7 @@ public class LLMService {
             currentMessages.addFirst(systemMessage());
         }
         Axon.LOGGER.info("LLM Thread: Sending {} messages to LLM.", currentMessages.size());
+        Axon.statusOverlay("Generating...");
 
         // Send messages to LLM
         ChatRequest chatRequest = ChatRequest.builder()
@@ -107,10 +95,20 @@ public class LLMService {
                 .temperature(0.0)
                 .build();
 
-        CompletableFuture<Chat> futureChat = llmApi.chatCompletions().create(chatRequest);
-        Chat chatResponse = futureChat.join(); // block this thread until the response is received
+        Chat chatResponse;
+        try {
+            CompletableFuture<Chat> futureChat = llmApi.chatCompletions().create(chatRequest);
+            chatResponse = futureChat.join(); // block this thread until the response is received
+        } catch (Exception e) {
+            Axon.LOGGER.error("LLM Thread: Error while running LLM", e);
+            Axon.chatMessage(Utils.prefixText("Axon")
+                    .append(Text.literal("Error while running LLM: " + e.getMessage())
+                            .formatted(Formatting.RED))
+            );
+            return;
+        }
         ChatMessage.ResponseMessage message = chatResponse.firstMessage();
-        Axon.LOGGER.info("LLM Thread: Received response. {}", message);
+        Axon.statusOverlay("Generated");
 
         // Handle LLM text message
         String messageText = Optional.ofNullable(message.getContent())
@@ -159,10 +157,20 @@ public class LLMService {
                         "LLM Thread: Executing function {} with arguments {}.",
                         function.getName(), function.getArguments()
                 );
+                Axon.statusOverlay("Executing function " + function.getName() + "...");
 
+                Axon.chatMessage(Utils.prefixText("Tool Call")
+                        .append(Text.literal(function.getName())
+                                .formatted(Formatting.GRAY))
+                        .append(Text.literal(" with arguments:\n")
+                                .formatted(Formatting.DARK_GRAY))
+                        .append(Text.literal(function.getArguments())
+                                .formatted(Formatting.GRAY))
+                );
                 try {
                     Object rawResult = functionExecutor.execute(function);
                     Axon.LOGGER.info("LLM Thread: Function {} returned: {}", function.getName(), rawResult);
+                    Axon.statusOverlay("Executed " + function.getName());
                     if (rawResult instanceof CompletableFuture<?> futureResult) {
                         result = futureResult.join().toString();
                     } else {
@@ -172,7 +180,14 @@ public class LLMService {
                     Axon.LOGGER.error("Error when running function", e);
                     result = "Error: " + e.getMessage();
                 }
-//                AxonClient.chatMessage("[" + function.getName() + "] " + function.getArguments() + " -> " + result);
+                Axon.chatMessage(Utils.prefixText("Function")
+                        .append(Text.literal(function.getName())
+                                .formatted(Formatting.GRAY))
+                        .append(Text.literal(" returned:\n")
+                                .formatted(Formatting.DARK_GRAY))
+                        .append(Text.literal(result)
+                                .formatted(Formatting.GRAY))
+                );
 
                 ChatMessage.ToolMessage toolMessage = ChatMessage.ToolMessage.of(result, toolCall.getId());
                 requiresFollowUp = true;

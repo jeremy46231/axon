@@ -21,10 +21,6 @@ import java.util.stream.Collectors;
 public class BaritoneService {
     private static final IBaritone baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
 
-    public static void executeCommand(String command) {
-        baritone.getCommandManager().execute(command);
-    }
-
     public static String getTextStatus() {
         IBaritoneProcess process = baritone.getPathingControlManager().mostRecentInControl().orElse(null);
         String processStatus = (process == null || !process.isActive())
@@ -54,6 +50,11 @@ public class BaritoneService {
         );
     }
 
+    public static boolean isActive() {
+        IBaritoneProcess process = baritone.getPathingControlManager().mostRecentInControl().orElse(null);
+        return process != null && process.isActive();
+    }
+
     public static BetterBlockPos getPlayerPos() {
         return baritone.getPlayerContext().playerFeet();
     }
@@ -75,14 +76,6 @@ public class BaritoneService {
 
     public static void explore(int x, int z) {
         baritone.getExploreProcess().explore(x, z);
-    }
-
-    public static void explore() {
-        BetterBlockPos position = getPlayerPos();
-        baritone.getExploreProcess().explore(
-                position.x,
-                position.z
-        );
     }
 
     public static void farm(int range, @Nullable BlockPos origin) {

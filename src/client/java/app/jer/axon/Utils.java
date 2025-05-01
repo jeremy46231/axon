@@ -23,9 +23,13 @@ public class Utils {
                 .append(Text.literal("] ").formatted(Formatting.DARK_AQUA));
     }
 
+    // --- Location Helper Classes ---
+
     public static class LocationXZ {
-        @JsonPropertyDescription("X and Z coordinates (specify one of position or waypoint, or neither to use the " +
-                "current position)")
+        @JsonPropertyDescription("""
+                X and Z coordinates (specify one of position or waypoint, or neither to use the \
+                current position)\
+                """)
         public CoordinateXZ position;
 
         @JsonPropertyDescription("The name of a saved waypoint")
@@ -55,8 +59,10 @@ public class Utils {
     ) {}
 
     public static class LocationXYZ {
-        @JsonPropertyDescription("X, Y, and Z coordinates (specify one of position or waypoint, or neither to use the" +
-                " current position)")
+        @JsonPropertyDescription("""
+                X, Y, and Z coordinates (specify one of position or waypoint, or neither to use the\
+                 current position)\
+                """)
         public CoordinateXYZ position;
 
         @JsonPropertyDescription("The name of a saved waypoint")
@@ -88,8 +94,8 @@ public class Utils {
     }
 
     public static class LocationXZOptionalY {
-        @JsonPropertyDescription("X, Y (optional), and Z coordinates (specify one of position or waypoint, or neither" +
-                " to use the current XYZ position)")
+        @JsonPropertyDescription("""
+                X, Y (optional), and Z coordinates (specify one of position or waypoint, or neither to use the current XYZ position)""")
         public CoordinateXZOptionalY position;
 
         @JsonPropertyDescription("The name of a saved waypoint")

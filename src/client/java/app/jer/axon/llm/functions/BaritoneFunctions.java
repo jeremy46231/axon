@@ -37,16 +37,15 @@ public class BaritoneFunctions {
                 .build());
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("baritone_mine")
-                .description("Locate and mine a specific amount of the specified block (this process will " +
-                        "stop once enough of the block/item has been collected)")
+                .description("""
+                        Locate and mine a specific amount of the specified block (this process will stop once enough of the block/item has been collected)""")
                 .functionalClass(MiningTool.class)
                 .strict(Boolean.TRUE)
                 .build());
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("baritone_explore")
-                .description("Move near uncached chunks around the specified coordinates to load them into " +
-                        "Baritone's cache, so it can pathfind outside of the render distance more" +
-                        "effectively (this process will not stop until you stop it)")
+                .description("""
+                        Move near uncached chunks around the specified coordinates to load them into Baritone's cache, so it can pathfind outside of the render distance more effectively (this process will not stop until you stop it)""")
                 .functionalClass(ExploreTool.class)
                 .strict(Boolean.TRUE)
                 .build());
@@ -58,8 +57,8 @@ public class BaritoneFunctions {
                 .build());
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("baritone_farm")
-                .description("Automatically farm and replant crops in a specified area (this process will not" +
-                        "stop until you stop it)")
+                .description("""
+                        Automatically farm and replant crops in a specified area (this process will not stop until you stop it)""")
                 .functionalClass(FarmTool.class)
                 .strict(Boolean.TRUE)
                 .build());
@@ -76,9 +75,9 @@ public class BaritoneFunctions {
                 .strict(Boolean.TRUE)
                 .build());
         functionExecutor.enrollFunction(FunctionDef.builder()
-                .name("baritone_process_wait")
-                .description("Wait until the current Baritone process is finished (make sure to inform the user " +
-                        "about the current process before waiting until it finishes)")
+                .name("baritone_wait_process")
+                .description("""
+                        Wait until the current Baritone process is finished (make sure to inform the user about the current process before waiting until it finishes)""")
                 .functionalClass(ProcessWaitTool.class)
                 .strict(Boolean.TRUE)
                 .build());
@@ -93,16 +92,13 @@ public class BaritoneFunctions {
     }
 
     static class MiningTool implements Functional {
-        @JsonPropertyDescription("IDs of blocks to locate and mine, like 'dirt', 'oak_log', or 'diamond_ore'. Make" +
-                "sure to include *all* acceptable blocks. For example, when chopping down trees for wood, specify all" +
-                " of the acceptable logs: oak_log, spruce_log, birch_log, jungle_log, acacia_log, dark_oak_log, " +
-                "mangrove_log, cherry_log, pale_oak_log, crimson_stem, warped_stem, and when mining diamonds, specify" +
-                " both diamond_ore and deepslate_diamond_ore.")
+        @JsonPropertyDescription("""
+                IDs of blocks to locate and mine, like 'dirt', 'oak_log', or 'diamond_ore'. Make sure to include *all* acceptable blocks. For example, when chopping down trees for wood, specify all  of the acceptable logs: oak_log, spruce_log, birch_log, jungle_log, acacia_log, dark_oak_log, mangrove_log, cherry_log, pale_oak_log, crimson_stem, warped_stem, and when mining diamonds, specify both diamond_ore and deepslate_diamond_ore.""")
         @JsonProperty(required = true)
         public String[] blocks;
 
-        @JsonPropertyDescription("How many blocks to collect (total across all specified blocks, including ones " +
-                "already in the inventory)")
+        @JsonPropertyDescription("""
+                How many blocks to collect (total across all specified blocks, including ones already in the inventory)""")
         @JsonProperty(required = true)
         public int count;
 
@@ -132,8 +128,8 @@ public class BaritoneFunctions {
         @JsonProperty(required = true)
         public Utils.LocationXYZ position;
 
-        @JsonPropertyDescription("The radius of the area to farm (set to 0 for the default: farm everything up to the" +
-                " maximum distance of 256 blocks)")
+        @JsonPropertyDescription("""
+                The radius of the area to farm (set to 0 for the default: farm everything up to the maximum distance of 256 blocks)""")
         @JsonProperty(required = true)
         public int radius;
 
@@ -151,9 +147,8 @@ public class BaritoneFunctions {
         @JsonProperty(required = true)
         public boolean playersOnly;
 
-        @JsonPropertyDescription("What to follow? If playersOnly is true, this is a list of usernames, otherwise it's" +
-                " a list of entity types (like 'skeleton', 'horse', etc). Optional, if not provided, follow the " +
-                "nearest player/entity of any type")
+        @JsonPropertyDescription("""
+                What to follow? If playersOnly is true, this is a list of usernames, otherwise it's a list of entity types (like 'skeleton', 'horse', etc). Optional, if not provided, follow the nearest player/entity of any type.""")
         public String[] targets;
 
         @Override
@@ -228,8 +223,8 @@ public class BaritoneFunctions {
         @JsonProperty(required = true)
         public String name;
 
-        @JsonPropertyDescription("The position of the waypoint " +
-                "(leave empty to default to the player's current position)")
+        @JsonPropertyDescription("""
+                The position of the waypoint (leave empty to default to the player's current position)""")
         @JsonProperty(required = true)
         public Utils.LocationXYZ position;
 
@@ -257,9 +252,8 @@ public class BaritoneFunctions {
     }
 
     static class ProcessWaitTool implements Functional {
-        @JsonPropertyDescription("The maximum amount of time to wait for the process to finish (in seconds). " +
-                "When the time is up, the process will not be stopped, but you will have a chance to reevaluate " +
-                "the current status and decide whether to continue waiting or stop the process.")
+        @JsonPropertyDescription("""
+                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, the process will not be stopped, but you will have a chance to reevaluate the current status and decide whether to continue waiting or stop the process.""")
         @JsonProperty(required = true)
         public long timeout;
 
@@ -271,8 +265,7 @@ public class BaritoneFunctions {
             long elapsedTime = 0;
             while (elapsedTime < timeout) {
                 if (!BaritoneService.isActive()) {
-                    return "The Baritone process has finished after " + elapsedTime + " seconds. You can now decide " +
-                            "whether the process was successful or not and choose what to do next.";
+                    return "The Baritone process has finished after " + elapsedTime + " seconds.";
                 }
                 try {
                     Thread.sleep(1000);
@@ -281,8 +274,7 @@ public class BaritoneFunctions {
                 }
                 elapsedTime++;
             }
-            return "The Baritone process is still active after " + timeout + " seconds. You can reevaluate the status" +
-                    " and decide whether to continue waiting or stop the process.";
+            return "The Baritone process is still active after " + timeout + " seconds.";
         }
     }
 }

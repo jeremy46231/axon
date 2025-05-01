@@ -23,6 +23,18 @@ public class Axon implements ClientModInitializer {
         chatMessage(Text.of(message));
     }
 
+    public static void statusOverlay(Text message) {
+        MinecraftClient.getInstance().execute(() -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null && client.player != null) {
+                client.player.sendMessage(message, true);
+            }
+        });
+    }
+    public static void statusOverlay(String message) {
+        statusOverlay(Text.of(message));
+    }
+
     @Override
     public void onInitializeClient() {
         CommandRegistrar.register();

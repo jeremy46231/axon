@@ -10,8 +10,8 @@ public class GeneralFunctions {
     public static void enrollFunctions(FunctionExecutor functionExecutor) {
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("wait")
-                .description("Wait for a certain amount of time (useful to wait for processes that take time " +
-                        "to finish, make sure to inform the user before running this)")
+                .description("""
+                        Wait for a certain amount of time (useful to wait for processes that take time to finish, make sure to inform the user before running this)""")
                 .functionalClass(WaitTool.class)
                 .strict(Boolean.TRUE)
                 .build());
