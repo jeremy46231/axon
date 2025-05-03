@@ -17,7 +17,7 @@ public class GeneralFunctions {
                 .build());
     }
 
-    public static class WaitTool implements Functional {
+    private static class WaitTool implements Functional {
         @JsonPropertyDescription("How many seconds to wait for")
         @JsonProperty(required = true)
         public float seconds;

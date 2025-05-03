@@ -6,6 +6,7 @@ public class FunctionRegistrar {
     public static FunctionExecutor getFunctions() {
         FunctionExecutor functionExecutor = new FunctionExecutor();
         GeneralFunctions.enrollFunctions(functionExecutor);
+        PlayerFunctions.enrollFunctions(functionExecutor);
         BaritoneFunctions.enrollFunctions(functionExecutor);
         return functionExecutor;
     }

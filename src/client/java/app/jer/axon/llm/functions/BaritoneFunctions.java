@@ -83,7 +83,7 @@ public class BaritoneFunctions {
                 .build());
     }
 
-    static class StopTool implements Functional {
+    private static class StopTool implements Functional {
         @Override
         public String execute() {
             BaritoneService.stop();
@@ -91,7 +91,7 @@ public class BaritoneFunctions {
         }
     }
 
-    static class MiningTool implements Functional {
+    private static class MiningTool implements Functional {
         @JsonPropertyDescription("""
                 IDs of blocks to locate and mine, like 'dirt', 'oak_log', or 'diamond_ore'. Make sure to include *all* acceptable blocks. For example, when chopping down trees for wood, specify all  of the acceptable logs: oak_log, spruce_log, birch_log, jungle_log, acacia_log, dark_oak_log, mangrove_log, cherry_log, pale_oak_log, crimson_stem, warped_stem, and when mining diamonds, specify both diamond_ore and deepslate_diamond_ore.""")
         @JsonProperty(required = true)
@@ -110,7 +110,7 @@ public class BaritoneFunctions {
         }
     }
 
-    static class ExploreTool implements Functional {
+    private static class ExploreTool implements Functional {
         @JsonPropertyDescription("Where to begin exploring around")
         @JsonProperty(required = true)
         public Utils.LocationXZ position;
@@ -123,7 +123,7 @@ public class BaritoneFunctions {
         }
     }
 
-    static class FarmTool implements Functional {
+    private static class FarmTool implements Functional {
         @JsonPropertyDescription("The center of the area to farm (default to the player's current position)")
         @JsonProperty(required = true)
         public Utils.LocationXYZ position;
@@ -142,7 +142,7 @@ public class BaritoneFunctions {
         }
     }
 
-    static class FollowTool implements Functional {
+    private static class FollowTool implements Functional {
         @JsonPropertyDescription("Follow only players, as opposed to any kind of entity")
         @JsonProperty(required = true)
         public boolean playersOnly;
@@ -189,7 +189,7 @@ public class BaritoneFunctions {
         }
     }
 
-    static class GotoTool implements Functional {
+    private static class GotoTool implements Functional {
         @JsonPropertyDescription("Where to navigate to")
         @JsonProperty(required = true)
         public Utils.LocationXZOptionalY position;
@@ -206,7 +206,7 @@ public class BaritoneFunctions {
             }
         }
     }
-    static class GotoYTool implements Functional {
+    private static class GotoYTool implements Functional {
         @JsonPropertyDescription("What Y level to go to")
         @JsonProperty(required = true)
         public int yLevel;
@@ -218,7 +218,7 @@ public class BaritoneFunctions {
         }
     }
 
-    static class WaypointAddTool implements Functional {
+    private static class WaypointAddTool implements Functional {
         @JsonPropertyDescription("The name of the waypoint")
         @JsonProperty(required = true)
         public String name;
@@ -235,7 +235,7 @@ public class BaritoneFunctions {
             return "Baritone has added a waypoint called '" + name + "' at XYZ " + coordinates.x + ", " + coordinates.y + ", " + coordinates.z;
         }
     }
-    static class WaypointRemoveTool implements Functional {
+    private static class WaypointRemoveTool implements Functional {
         @JsonPropertyDescription("The exact name of the waypoint to remove")
         @JsonProperty(required = true)
         public String name;
@@ -251,9 +251,11 @@ public class BaritoneFunctions {
         }
     }
 
-    static class ProcessWaitTool implements Functional {
+    private static class ProcessWaitTool implements Functional {
         @JsonPropertyDescription("""
-                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, the process will not be stopped, but you will have a chance to reevaluate the current status and decide whether to continue waiting or stop the process.""")
+                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, \
+                the process will not be stopped, but you will have a chance to reevaluate the current status and \
+                decide whether to continue waiting or stop the process.""")
         @JsonProperty(required = true)
         public long timeout;
 

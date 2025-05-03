@@ -93,6 +93,7 @@ public class LLMService {
                 .messages(currentMessages)
                 .tools(functionExecutor.getToolFunctions())
                 .temperature(0.0)
+                .parallelToolCalls(true)
                 .build();
 
         Chat chatResponse;
@@ -152,7 +153,6 @@ public class LLMService {
             for (ToolCall toolCall : toolCalls) {
                 FunctionCall function = toolCall.getFunction();
                 if (function == null) continue;
-                String result;
                 Axon.LOGGER.info(
                         "LLM Thread: Executing function {} with arguments {}.",
                         function.getName(), function.getArguments()
@@ -167,6 +167,7 @@ public class LLMService {
                         .append(Text.literal(function.getArguments())
                                 .formatted(Formatting.GRAY))
                 );
+                String result;
                 try {
                     Object rawResult = functionExecutor.execute(function);
                     Axon.LOGGER.info("LLM Thread: Function {} returned: {}", function.getName(), rawResult);
@@ -177,10 +178,10 @@ public class LLMService {
                         result = rawResult.toString();
                     }
                 } catch (RuntimeException e) {
-                    Axon.LOGGER.error("Error when running function", e);
+                    Axon.LOGGER.error("LLM Thread: Error when running function", e);
                     result = "Error: " + e.getMessage();
                 }
-                Axon.chatMessage(Utils.prefixText("Function")
+                Axon.chatMessage(Utils.prefixText("Tool Call")
                         .append(Text.literal(function.getName())
                                 .formatted(Formatting.GRAY))
                         .append(Text.literal(" returned:\n")

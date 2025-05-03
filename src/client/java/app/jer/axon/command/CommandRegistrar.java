@@ -25,6 +25,9 @@ public class CommandRegistrar {
             dispatcher.register(CommandManager.literal("a-clear")
                     .executes(new ClearCommand())
             );
+            dispatcher.register(CommandManager.literal("a-debug")
+                    .executes(new DebugCommand())
+            );
         });
         Axon.LOGGER.info("Axon commands registered");
     }
@@ -52,4 +55,5 @@ public class CommandRegistrar {
             return 1;
         }
     }
+
 }
