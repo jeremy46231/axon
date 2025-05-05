@@ -253,9 +253,7 @@ public class BaritoneFunctions {
 
     private static class ProcessWaitTool implements Functional {
         @JsonPropertyDescription("""
-                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, \
-                the process will not be stopped, but you will have a chance to reevaluate the current status and \
-                decide whether to continue waiting or stop the process.""")
+                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, the process will not be stopped, but you will have a chance to reevaluate the current status and decide whether to continue waiting or stop the process.""")
         @JsonProperty(required = true)
         public long timeout;
 

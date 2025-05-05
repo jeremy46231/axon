@@ -25,8 +25,7 @@ public class PlayerFunctions {
 
     private static class DropItemsTool implements Functional {
         @JsonPropertyDescription("""
-                The inventory slot index to drop (0-8 are the hotbar, 9-35 are the inventory, 36-39 are the armor \
-                slots from bottom to top, and 40 is the offhand)""")
+                The inventory slot index to drop (0-8 are the hotbar, 9-35 are the inventory, 36-39 are the armor slots from bottom to top, and 40 is the offhand)""")
         @JsonProperty(required = true)
         public int stackIndex;
 
