@@ -2,6 +2,7 @@ package app.jer.axon.llm.functions;
 
 import app.jer.axon.Axon;
 import app.jer.axon.Utils;
+import app.jer.axon.llm.LLMService;
 import app.jer.axon.service.BaritoneService;
 import baritone.api.pathing.goals.GoalBlock;
 import baritone.api.pathing.goals.GoalXZ;
@@ -77,7 +78,7 @@ public class BaritoneFunctions {
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("baritone_wait_process")
                 .description("""
-                        Wait until the current Baritone process is finished (make sure to inform the user about the current process before waiting until it finishes)""")
+                        Wait until the current Baritone process finishes or a timeout occurs. The agent enters WAITING_FOR_BARITONE state.""")
                 .functionalClass(ProcessWaitTool.class)
                 .strict(Boolean.TRUE)
                 .build());
@@ -206,6 +207,7 @@ public class BaritoneFunctions {
             }
         }
     }
+
     private static class GotoYTool implements Functional {
         @JsonPropertyDescription("What Y level to go to")
         @JsonProperty(required = true)
@@ -235,6 +237,7 @@ public class BaritoneFunctions {
             return "Baritone has added a waypoint called '" + name + "' at XYZ " + coordinates.x + ", " + coordinates.y + ", " + coordinates.z;
         }
     }
+
     private static class WaypointRemoveTool implements Functional {
         @JsonPropertyDescription("The exact name of the waypoint to remove")
         @JsonProperty(required = true)
@@ -253,28 +256,18 @@ public class BaritoneFunctions {
 
     private static class ProcessWaitTool implements Functional {
         @JsonPropertyDescription("""
-                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, the process will not be stopped, but you will have a chance to reevaluate the current status and decide whether to continue waiting or stop the process.""")
+                The maximum amount of time to wait for the process to finish (in seconds). When the time is up, the process will not be stopped, but the agent will resume thinking.""")
         @JsonProperty(required = true)
         public long timeout;
 
         @Override
-        public String execute() {
-            if (!BaritoneService.isActive()) {
-                return "Error: The Baritone process is not active";
+        public LLMService.BaritoneWaitAction execute() {
+            if (timeout <= 0) {
+                throw new IllegalArgumentException("Timeout must be positive");
             }
-            long elapsedTime = 0;
-            while (elapsedTime < timeout) {
-                if (!BaritoneService.isActive()) {
-                    return "The Baritone process has finished after " + elapsedTime + " seconds.";
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                elapsedTime++;
-            }
-            return "The Baritone process is still active after " + timeout + " seconds.";
+            return new LLMService.BaritoneWaitAction(
+                    System.currentTimeMillis() + timeout * 1000
+            );
         }
     }
 }

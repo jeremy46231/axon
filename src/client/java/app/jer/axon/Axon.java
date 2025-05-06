@@ -1,6 +1,7 @@
 package app.jer.axon;
 
 import app.jer.axon.command.CommandRegistrar;
+import app.jer.axon.llm.LLMService;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -19,6 +20,7 @@ public class Axon implements ClientModInitializer {
             }
         });
     }
+
     public static void chatMessage(String message) {
         chatMessage(Text.of(message));
     }
@@ -31,12 +33,16 @@ public class Axon implements ClientModInitializer {
             }
         });
     }
+
     public static void statusOverlay(String message) {
         statusOverlay(Text.of(message));
     }
 
     @Override
     public void onInitializeClient() {
+        LOGGER.info("Initializing Axon Mod...");
         CommandRegistrar.register();
+        LLMService.initialize(); // Start the agent loop
+        LOGGER.info("Axon Mod Initialized.");
     }
 }

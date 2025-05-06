@@ -4,11 +4,6 @@ import app.jer.axon.Axon;
 import app.jer.axon.service.PlayerService;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class DebugCommand implements Command<ServerCommandSource> {

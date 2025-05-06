@@ -21,6 +21,10 @@ public class CommandRegistrar {
                     .then(CommandManager.argument("message", StringArgumentType.greedyString())
                             .executes(new PromptCommand())
                     )
+                    .executes(ctx -> {
+                        Axon.chatMessage("Hello World!");
+                        return 1;
+                    })
             );
             dispatcher.register(CommandManager.literal("a-clear")
                     .executes(new ClearCommand())
@@ -40,8 +44,9 @@ public class CommandRegistrar {
             try {
                 LLMService.userMessage(message);
             } catch (Exception e) {
-                Axon.LOGGER.error("Error while running user prompt", e);
+                Axon.LOGGER.error("Error sending user prompt to agent", e);
                 commandContext.getSource().sendError(Text.literal("Error: " + e.getMessage()));
+                return 0;
             }
 
             return 1;
@@ -51,7 +56,13 @@ public class CommandRegistrar {
     public static class ClearCommand implements Command<ServerCommandSource> {
         @Override
         public int run(CommandContext<ServerCommandSource> commandContext) {
-            LLMService.clearChat();
+            try {
+                LLMService.clearChat();
+            } catch (Exception e) {
+                Axon.LOGGER.error("Error sending clear command to agent", e);
+                commandContext.getSource().sendError(Text.literal("Error: " + e.getMessage()));
+                return 0;
+            }
             return 1;
         }
     }

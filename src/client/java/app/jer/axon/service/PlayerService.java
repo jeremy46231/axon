@@ -1,6 +1,5 @@
 package app.jer.axon.service;
 
-import app.jer.axon.Axon;
 import app.jer.axon.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -25,6 +24,7 @@ public class PlayerService {
         }
         return player;
     }
+
     private static @NotNull World getWorld() {
         World world = MinecraftClient.getInstance().world;
         if (world == null) {
@@ -63,6 +63,7 @@ public class PlayerService {
                 inventory
         );
     }
+
     private static String getHungerString(ClientPlayerEntity player) {
         return String.format(
                 "%d/20 (%.1f saturation)",
@@ -70,6 +71,7 @@ public class PlayerService {
                 player.getHungerManager().getSaturationLevel()
         );
     }
+
     private static String getPositionString() {
         BlockPos blockPos = getPlayer().getBlockPos();
         Vec3d exactPos = getPlayer().getPos();
@@ -78,6 +80,7 @@ public class PlayerService {
                 exactPos.x, exactPos.y, exactPos.z
         );
     }
+
     public static String getInventoryString() {
         PlayerInventory inventory = getPlayer().getInventory();
         StringBuilder sb = new StringBuilder();
@@ -115,6 +118,7 @@ public class PlayerService {
         }
         return sb.toString();
     }
+
     private static String getTimeString() {
         long timeOfDay = getWorld().getTime() % 24000;
         StringBuilder sb = new StringBuilder();
@@ -129,6 +133,7 @@ public class PlayerService {
         }
         return sb.toString();
     }
+
     private static String getWeatherString() {
         World world = getWorld();
         if (world.isThundering()) {
@@ -139,6 +144,7 @@ public class PlayerService {
         }
         return "Clear";
     }
+
     private static String getBiomeString() {
         BlockPos blockPos = getPlayer().getBlockPos();
         if (blockPos == null) return "Unknown";
@@ -147,6 +153,7 @@ public class PlayerService {
                 .map(biomeRegistryKey -> Utils.removeMinecraftPrefix(biomeRegistryKey.toString()))
                 .orElse("Unknown");
     }
+
     private static String onlinePlayers() {
         var onlinePlayers = getWorld().getPlayers();
         if (onlinePlayers.isEmpty()) {

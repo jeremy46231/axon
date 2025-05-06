@@ -56,7 +56,8 @@ public class Utils {
             int x,
             @JsonProperty(required = true)
             int z
-    ) {}
+    ) {
+    }
 
     public static class LocationXYZ {
         @JsonPropertyDescription("""

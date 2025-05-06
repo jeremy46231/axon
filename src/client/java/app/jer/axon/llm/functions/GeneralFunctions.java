@@ -1,5 +1,6 @@
 package app.jer.axon.llm.functions;
 
+import app.jer.axon.llm.LLMService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.sashirestela.openai.common.function.FunctionDef;
@@ -11,7 +12,7 @@ public class GeneralFunctions {
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("wait")
                 .description("""
-                        Wait for a certain amount of time (useful to wait for processes that take time to finish, make sure to inform the user before running this)""")
+                        Pause execution for a specific duration. The agent will enter a WAITING_FOR_TIME state and resume thinking after the duration.""")
                 .functionalClass(WaitTool.class)
                 .strict(Boolean.TRUE)
                 .build());
@@ -23,13 +24,13 @@ public class GeneralFunctions {
         public float seconds;
 
         @Override
-        public String execute() {
-            try {
-                Thread.sleep((long) (seconds * 1000));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        public LLMService.WaitAction execute() {
+            if (seconds <= 0) {
+                throw new IllegalArgumentException("Timeout must be positive");
             }
-            return "Waited for " + seconds + " seconds";
+            return new LLMService.WaitAction(
+                    (long) (System.currentTimeMillis() + seconds * 1000)
+            );
         }
     }
 }
