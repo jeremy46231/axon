@@ -44,11 +44,12 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation 'baritone-api-fabric:baritone-api-fabric:1.11.1-2-ga0f100f4'
     implementation "dev.babbaj:nether-pathfinder:1.4.1"
+
+    modImplementation 'meteor-client:meteor-client:1.21.4-42'
 
     implementation 'io.github.sashirestela:simple-openai:3.19.4'
 }

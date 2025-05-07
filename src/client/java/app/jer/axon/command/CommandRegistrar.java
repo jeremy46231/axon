@@ -1,7 +1,7 @@
 package app.jer.axon.command;
 
 import app.jer.axon.Axon;
-import app.jer.axon.llm.LLMService;
+import app.jer.axon.llm.AxonAgent;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -42,7 +42,7 @@ public class CommandRegistrar {
             String message = StringArgumentType.getString(commandContext, "message");
 
             try {
-                LLMService.userMessage(message);
+                AxonAgent.userMessage(message);
             } catch (Exception e) {
                 Axon.LOGGER.error("Error sending user prompt to agent", e);
                 commandContext.getSource().sendError(Text.literal("Error: " + e.getMessage()));
@@ -57,7 +57,7 @@ public class CommandRegistrar {
         @Override
         public int run(CommandContext<ServerCommandSource> commandContext) {
             try {
-                LLMService.clearChat();
+                AxonAgent.clearChat();
             } catch (Exception e) {
                 Axon.LOGGER.error("Error sending clear command to agent", e);
                 commandContext.getSource().sendError(Text.literal("Error: " + e.getMessage()));

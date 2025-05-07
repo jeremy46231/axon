@@ -8,6 +8,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Utils {
     public static String removeMinecraftPrefix(String originalID) {
         if (originalID.startsWith("minecraft:")) {
@@ -21,6 +24,15 @@ public class Utils {
                 .append(Text.literal("[").formatted(Formatting.DARK_AQUA))
                 .append(Text.literal(name).formatted(Formatting.AQUA))
                 .append(Text.literal("] ").formatted(Formatting.DARK_AQUA));
+    }
+
+    public static void runLater(long delayMillis, Runnable task) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                task.run();
+            }
+        }, delayMillis);
     }
 
     // --- Location Helper Classes ---

@@ -5,28 +5,32 @@
   "name": "Axon",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
-    "Me!"
+    "Jeremy Woolley <axon@jeremywoolley.com>"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://jeremywoolley.com/",
+    "sources": "https://github.com/jeremy46231/axon"
   },
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "icon": "assets/axon/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
       "app.jer.axon.Axon"
+    ],
+    "meteor": [
+      "app.jer.axon.MeteorConfigAddon"
     ]
   },
-  "mixins": [],
+  "mixins": [
+    "axon.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.16.13",
     "minecraft": "~1.21.4",
     "java": ">=21",
-    "fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "fabric-api": "*",
+    "meteor-client": "*",
+    "baritone": "*"
   }
 }

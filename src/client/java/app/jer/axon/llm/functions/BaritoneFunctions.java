@@ -2,7 +2,7 @@ package app.jer.axon.llm.functions;
 
 import app.jer.axon.Axon;
 import app.jer.axon.Utils;
-import app.jer.axon.llm.LLMService;
+import app.jer.axon.llm.AxonAgent;
 import app.jer.axon.service.BaritoneService;
 import baritone.api.pathing.goals.GoalBlock;
 import baritone.api.pathing.goals.GoalXZ;
@@ -261,11 +261,11 @@ public class BaritoneFunctions {
         public long timeout;
 
         @Override
-        public LLMService.BaritoneWaitAction execute() {
+        public AxonAgent.BaritoneWaitAction execute() {
             if (timeout <= 0) {
                 throw new IllegalArgumentException("Timeout must be positive");
             }
-            return new LLMService.BaritoneWaitAction(
+            return new AxonAgent.BaritoneWaitAction(
                     System.currentTimeMillis() + timeout * 1000
             );
         }

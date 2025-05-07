@@ -1,6 +1,6 @@
 package app.jer.axon.llm.functions;
 
-import app.jer.axon.llm.LLMService;
+import app.jer.axon.llm.AxonAgent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.sashirestela.openai.common.function.FunctionDef;
@@ -12,7 +12,7 @@ public class GeneralFunctions {
         functionExecutor.enrollFunction(FunctionDef.builder()
                 .name("wait")
                 .description("""
-                        Pause execution for a specific duration. The agent will enter a WAITING_FOR_TIME state and resume thinking after the duration.""")
+                        Wait for a specific duration. Consider using baritone_wait_process instead, if Baritone is involved.""")
                 .functionalClass(WaitTool.class)
                 .strict(Boolean.TRUE)
                 .build());
@@ -24,11 +24,11 @@ public class GeneralFunctions {
         public float seconds;
 
         @Override
-        public LLMService.WaitAction execute() {
+        public AxonAgent.WaitAction execute() {
             if (seconds <= 0) {
                 throw new IllegalArgumentException("Timeout must be positive");
             }
-            return new LLMService.WaitAction(
+            return new AxonAgent.WaitAction(
                     (long) (System.currentTimeMillis() + seconds * 1000)
             );
         }
