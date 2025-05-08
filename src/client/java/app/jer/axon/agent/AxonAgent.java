@@ -1,9 +1,10 @@
-package app.jer.axon.llm;
+package app.jer.axon.agent;
 
 import app.jer.axon.Axon;
 import app.jer.axon.Utils;
-import app.jer.axon.llm.functions.FunctionRegistrar;
+import app.jer.axon.agent.functions.FunctionRegistrar;
 import app.jer.axon.service.BaritoneService;
+import app.jer.axon.service.LLMService;
 import io.github.sashirestela.openai.SimpleOpenAIGeminiGoogle;
 import io.github.sashirestela.openai.common.function.FunctionCall;
 import io.github.sashirestela.openai.common.function.FunctionExecutor;
@@ -18,9 +19,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class AxonAgent {
-    private static final SimpleOpenAIGeminiGoogle llmApi = SimpleOpenAIGeminiGoogle.builder()
-            .apiKey(System.getenv("GEMINI_API_KEY"))
-            .build();
     private static final FunctionExecutor functionExecutor = FunctionRegistrar.getFunctions();
     private static final List<ChatMessage> messages = Collections.synchronizedList(new ArrayList<>());
     // Single thread executor for the main agent loop
@@ -397,7 +395,11 @@ public class AxonAgent {
                 .build();
 
         // Send request asynchronously
-        currentLLMRequest = llmApi.chatCompletions().create(chatRequest);
+        SimpleOpenAIGeminiGoogle api = LLMService.getApi();
+        if (api == null) {
+            throw new NullPointerException("No API key set");
+        }
+        currentLLMRequest = api.chatCompletions().create(chatRequest);
 
         // Handle response or exception using callbacks that enqueue results/errors
         currentLLMRequest.whenCompleteAsync((chatResponse, throwable) -> {

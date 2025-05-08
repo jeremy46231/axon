@@ -1,4 +1,4 @@
-package app.jer.axon.llm;
+package app.jer.axon.agent;
 
 import io.github.sashirestela.openai.common.tool.ToolCall;
 import io.github.sashirestela.openai.domain.chat.ChatMessage;

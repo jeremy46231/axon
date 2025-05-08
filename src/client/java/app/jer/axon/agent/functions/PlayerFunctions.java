@@ -1,4 +1,4 @@
-package app.jer.axon.llm.functions;
+package app.jer.axon.agent.functions;
 
 import app.jer.axon.service.PlayerService;
 import com.fasterxml.jackson.annotation.JsonProperty;

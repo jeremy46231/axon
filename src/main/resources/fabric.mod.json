@@ -8,7 +8,7 @@
     "Jeremy Woolley <axon@jeremywoolley.com>"
   ],
   "contact": {
-    "homepage": "https://jeremywoolley.com/",
+    "homepage": "https://axon.jer.app",
     "sources": "https://github.com/jeremy46231/axon"
   },
   "license": "GPL-3.0-or-later",
@@ -19,7 +19,7 @@
       "app.jer.axon.Axon"
     ],
     "meteor": [
-      "app.jer.axon.MeteorConfigAddon"
+      "app.jer.axon.entrypoint.MeteorEntrypoint"
     ]
   },
   "mixins": [
@@ -34,6 +34,11 @@
     "baritone": "*"
   },
   "custom": {
-    "meteor-client:color": "0,170,170"
+    "meteor-client:color": "0,170,170",
+    "modmenu": {
+      "links": {
+        "axon.modmenu.website": "https://axon.jer.app"
+      }
+    }
   }
 }

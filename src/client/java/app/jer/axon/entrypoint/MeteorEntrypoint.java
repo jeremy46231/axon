@@ -1,10 +1,11 @@
-package app.jer.axon;
+package app.jer.axon.entrypoint;
 
+import app.jer.axon.Utils;
 import app.jer.axon.service.MeteorService;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 
-public class MeteorConfigAddon extends MeteorAddon {
+public class MeteorEntrypoint extends MeteorAddon {
     @Override
     public void onInitialize() {
         MeteorService.initialize();

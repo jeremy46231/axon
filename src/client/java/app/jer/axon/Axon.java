@@ -1,8 +1,9 @@
 package app.jer.axon;
 
+import app.jer.axon.agent.AxonAgent;
 import app.jer.axon.command.CommandRegistrar;
-import app.jer.axon.llm.AxonAgent;
 import app.jer.axon.service.BaritoneService;
+import app.jer.axon.service.LLMService;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -43,6 +44,7 @@ public class Axon implements ClientModInitializer {
     public void onInitializeClient() {
         CommandRegistrar.register();
         BaritoneService.initialize();
+        LLMService.initialize();
         AxonAgent.initialize();
         LOGGER.info("Axon initialized");
     }

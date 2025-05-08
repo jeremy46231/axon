@@ -1,8 +1,8 @@
-package app.jer.axon.llm.functions;
+package app.jer.axon.agent.functions;
 
 import app.jer.axon.Axon;
 import app.jer.axon.Utils;
-import app.jer.axon.llm.AxonAgent;
+import app.jer.axon.agent.AxonAgent;
 import app.jer.axon.service.BaritoneService;
 import baritone.api.pathing.goals.GoalBlock;
 import baritone.api.pathing.goals.GoalXZ;

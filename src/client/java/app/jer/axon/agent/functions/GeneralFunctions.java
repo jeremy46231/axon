@@ -1,6 +1,6 @@
-package app.jer.axon.llm.functions;
+package app.jer.axon.agent.functions;
 
-import app.jer.axon.llm.AxonAgent;
+import app.jer.axon.agent.AxonAgent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.sashirestela.openai.common.function.FunctionDef;

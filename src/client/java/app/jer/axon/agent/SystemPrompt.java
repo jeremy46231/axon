@@ -1,4 +1,4 @@
-package app.jer.axon.llm;
+package app.jer.axon.agent;
 
 import app.jer.axon.service.StatusService;
 

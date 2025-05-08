@@ -1,4 +1,4 @@
-package app.jer.axon.llm.functions;
+package app.jer.axon.agent.functions;
 
 import io.github.sashirestela.openai.common.function.FunctionExecutor;
 
