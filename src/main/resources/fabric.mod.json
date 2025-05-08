@@ -13,7 +13,7 @@
   },
   "license": "GPL-3.0-or-later",
   "icon": "assets/axon/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "client": [
       "app.jer.axon.Axon"
@@ -32,5 +32,8 @@
     "fabric-api": "*",
     "meteor-client": "*",
     "baritone": "*"
+  },
+  "custom": {
+    "meteor-client:color": "0,170,170"
   }
 }

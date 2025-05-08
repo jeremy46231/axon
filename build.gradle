@@ -24,6 +24,18 @@ repositories {
         name = 'babbaj-repo'
         url = uri('https://babbaj.github.io/maven/')
     }
+    maven {
+        name = "meteorRepositorySnapshots"
+        url = uri("https://maven.meteordev.org/snapshots")
+    }
+    maven {
+        name = "meteorRepositoryReleases"
+        url = uri("https://maven.meteordev.org/releases")
+    }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 loom {
@@ -46,12 +58,14 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation 'baritone-api-fabric:baritone-api-fabric:1.11.1-2-ga0f100f4'
+    modImplementation "baritone-api-fabric:baritone-api-fabric:1.11.1-2-ga0f100f4"
     implementation "dev.babbaj:nether-pathfinder:1.4.1"
 
-    modImplementation 'meteor-client:meteor-client:1.21.4-42'
+    modImplementation "meteordevelopment:meteor-client:1.21.4-SNAPSHOT"
 
-    implementation 'io.github.sashirestela:simple-openai:3.19.4'
+    modImplementation "com.terraformersmc:modmenu:13.0.3"
+
+    implementation "io.github.sashirestela:simple-openai:3.19.4"
 }
 
 processResources {

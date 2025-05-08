@@ -125,7 +125,7 @@ public class BaritoneFunctions {
     }
 
     private static class FarmTool implements Functional {
-        @JsonPropertyDescription("The center of the area to farm (default to the player's current position)")
+        @JsonPropertyDescription("The center of the area to farm (leave as an empty object to default to the player's current position)")
         @JsonProperty(required = true)
         public Utils.LocationXYZ position;
 
@@ -226,7 +226,7 @@ public class BaritoneFunctions {
         public String name;
 
         @JsonPropertyDescription("""
-                The position of the waypoint (leave empty to default to the player's current position)""")
+                The position of the waypoint (leave as an empty object to default to the player's current position)""")
         @JsonProperty(required = true)
         public Utils.LocationXYZ position;
 

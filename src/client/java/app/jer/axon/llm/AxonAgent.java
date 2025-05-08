@@ -33,6 +33,7 @@ public class AxonAgent {
     private static final ConcurrentLinkedQueue<ToolCall> toolExecutionQueue = new ConcurrentLinkedQueue<>(); // Queue for tools LLM wants to run
 
     private static volatile AgentState currentState = AgentState.IDLE;
+    private static int baritoneInactiveChecks = 0;
 
     private static CompletableFuture<Chat> currentLLMRequest = null;
 
@@ -145,13 +146,18 @@ public class AxonAgent {
         if (System.currentTimeMillis() > waitTimeoutMillis) {
             Axon.LOGGER.info("Baritone wait timed out.");
             inputQueue.offer(new ControlInput(ControlType.BARITONE_TIMEOUT, currentWaitingToolCallId));
+            baritoneInactiveChecks = 0; // Reset counter on timeout
             // State transition happens in handleControlInput
         } else if (!BaritoneService.isActive()) {
-            Axon.LOGGER.info("Baritone process completed.");
-            inputQueue.offer(new ControlInput(ControlType.BARITONE_COMPLETED, currentWaitingToolCallId));
-            // State transition happens in handleControlInput
+            baritoneInactiveChecks++;
+            if (baritoneInactiveChecks >= 5) {
+                inputQueue.offer(new ControlInput(ControlType.BARITONE_COMPLETED, currentWaitingToolCallId));
+                baritoneInactiveChecks = 0;
+            }
+        } else {
+            baritoneInactiveChecks = 0;
+            // Otherwise, continue waiting
         }
-        // Otherwise, continue waiting
     }
 
     private static void checkTimeWait() {
@@ -173,6 +179,7 @@ public class AxonAgent {
             // Cancel Baritone if it was waiting for it
             if (currentState == AgentState.WAITING_FOR_BARITONE) {
                 BaritoneService.stop();
+                baritoneInactiveChecks = 0;
             }
             // Clear wait state variables
             waitTimeoutMillis = 0;
@@ -287,6 +294,7 @@ public class AxonAgent {
         currentState = AgentState.IDLE; // Default to IDLE, might change to THINKING below
         waitTimeoutMillis = 0;
         currentWaitingToolCallId = null;
+        baritoneInactiveChecks = 0;
 
         switch (input.type()) {
             case CLEAR_CHAT:
@@ -299,6 +307,7 @@ public class AxonAgent {
                 Axon.chatMessage(Utils.prefixText("Axon")
                         .append(Text.literal("Chat cleared and actions stopped.").formatted(Formatting.GRAY))
                 );
+                baritoneInactiveChecks = 0;
                 break;
 
             case INTERRUPT:
@@ -453,6 +462,7 @@ public class AxonAgent {
                     waitTimeoutMillis = timeoutMillis;
                     currentState = AgentState.WAITING_FOR_BARITONE;
                     currentWaitingToolCallId = toolCall.getId();
+                    baritoneInactiveChecks = 0;
                     Axon.chatMessage(Utils.prefixText("Axon")
                             .append(Text.literal("Waiting for Baritone process to complete.")
                                     .formatted(Formatting.YELLOW))

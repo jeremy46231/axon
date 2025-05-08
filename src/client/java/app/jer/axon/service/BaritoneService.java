@@ -3,6 +3,7 @@ package app.jer.axon.service;
 import app.jer.axon.Axon;
 import baritone.api.BaritoneAPI;
 import baritone.api.IBaritone;
+import baritone.api.Settings;
 import baritone.api.cache.IWaypoint;
 import baritone.api.cache.IWaypointCollection;
 import baritone.api.cache.Waypoint;
@@ -20,6 +21,19 @@ import java.util.stream.Collectors;
 
 public class BaritoneService {
     private static final IBaritone baritone = BaritoneAPI.getProvider().getPrimaryBaritone();
+
+    public static void initialize() {
+        Settings settings = BaritoneAPI.getSettings();
+        settings.allowInventory.value = true;
+        settings.assumeExternalAutoTool.value = true;
+        settings.allowDownward.value = false;
+        settings.avoidance.value = true;
+        settings.rightClickContainerOnArrival.value = false;
+        settings.freeLook.value = false;
+        settings.randomLooking.value = 0D;
+        settings.randomLooking113.value = 0D;
+        settings.renderGoalAnimated.value = false;
+    }
 
     public static String getTextStatus() {
         IBaritoneProcess process = baritone.getPathingControlManager().mostRecentInControl().orElse(null);

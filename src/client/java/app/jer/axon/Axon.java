@@ -2,6 +2,7 @@ package app.jer.axon;
 
 import app.jer.axon.command.CommandRegistrar;
 import app.jer.axon.llm.AxonAgent;
+import app.jer.axon.service.BaritoneService;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -40,9 +41,9 @@ public class Axon implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        LOGGER.info("Initializing Axon Mod...");
         CommandRegistrar.register();
+        BaritoneService.initialize();
         AxonAgent.initialize();
-        LOGGER.info("Axon Mod Initialized.");
+        LOGGER.info("Axon initialized");
     }
 }
