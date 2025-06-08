@@ -42,3 +42,4 @@ replay_*.log
 *.hprof
 *.jfr
 .aider*
+repomix-output.xml

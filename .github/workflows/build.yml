@@ -18,13 +18,20 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'microsoft'
+          distribution: 'zulu'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+
       - name: build
         run: ./gradlew build
-      - name: capture build artifacts
+
+      - name: upload all build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Artifacts
           path: build/libs/
+      - name: upload main build jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: axon.jar
+          path: build/libs/axon-*.jar
