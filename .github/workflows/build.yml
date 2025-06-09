@@ -30,11 +30,13 @@ jobs:
       - name: update nightly release
         run: |
           gh auth setup-git
+          gh release delete nightly --cleanup-tag --yes || true
           gh release create nightly \
             build/libs/*.jar \
             --title "Nightly Build" \
             --notes "Commit: $GITHUB_SHA" \
-            --prerelease \
-            --clobber
+            --prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
