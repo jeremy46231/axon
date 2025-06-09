@@ -4,12 +4,15 @@
 
 Axon is an autonomous agent for Minecraft, combining a Large Language Model with the tools and context to control Baritone within a feedback loop. Give it commands in plain English, and watch it automate everything from mining resources to executing complex, multi-step plans.
 
+![screenshot](screenshot.png)
+
 Axon integrates:
-- **[Gemini](https://deepmind.google/models/gemini)** for high-level planning and natural language control
+
+- [Gemini](https://deepmind.google/models/gemini) for high-level planning and natural language control
   - Standard agent (tools-in-a-loop) setup with access to a chat with the user, a variety of contextual information, and a number of functions to call
-- **[Baritone](https://github.com/cabaletta/baritone)** for intelligent pathfinding (navigation, waypoints, mining, farming, and more)
+- [Baritone](https://github.com/cabaletta/baritone) for intelligent pathfinding (navigation, waypoints, mining, farming, and more)
   - Manages Baritone's state and gives the LLM access to current status and functions
-- **[Meteor Client](https://github.com/MeteorDevelopment/meteor-client)** for player management (managing tools, food, armor, items, etc., defending against mobs, and more)
+- [Meteor Client](https://github.com/MeteorDevelopment/meteor-client) for player management (managing tools, food, armor, items, etc., defending against mobs, and more)
   - Automatically configures a variety of modules to help the bot take care of itself
 
 ## Setup
@@ -29,7 +32,7 @@ Get your free Gemini API key (no payment method needed, just a Google account):
 
 1.  Go to [Google AI Studio](https://aistudio.google.com/apikey)
 2.  Click "Create API key" and follow the steps
-4.  Copy the generated API key
+3.  Copy the generated API key
 4.  In Minecraft, run `/a-key <your_api_key>`
 
 You're all set! Axon is now ready for your commands.
@@ -37,11 +40,13 @@ You're all set! Axon is now ready for your commands.
 ## Usage
 
 Use the `/a` command followed by your request in natural language.
+
 ```
 /a <your request here>
 ```
 
 If the agent ever gets stuck or confused, you can reset its memory and stop all actions with:
+
 ```
 /a-clear
 ```
@@ -51,16 +56,19 @@ If the agent ever gets stuck or confused, you can reset its memory and stop all 
 Here are a few things you can ask Axon to do:
 
 - **Navigation**
+
   - `/a go to 120 -450`
   - `/a go to the surface`
   - `/a remember that this is home`
 
 - **Mining & Gathering**
+
   - `/a mine 50 iron ore`
   - `/a get 64 logs, then go back to where you started`
   - `/a go to Y level -54 and mine diamonds`
 
 - **Interaction & Inventory**
+
   - `/a follow the player named Steve`
   - `/a drop the diamonds you collected`
   - `/a put all your weapons in the hotbar`
