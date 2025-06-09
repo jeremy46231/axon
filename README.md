@@ -21,7 +21,7 @@ Requirements:
 
 Put these mods in your `.minecraft/mods/` folder:
 
-- [Axon](https://github.com/jeremy46231/axon/releases/latest/download/axon-1.0.0.jar)
+- [Axon](https://github.com/jeremy46231/axon/releases/download/nightly/axon-1.0.0.jar)
 - [Baritone](https://github.com/jeremy46231/axon/raw/refs/heads/main/libs/baritone-api-fabric-1.11.1-2-ga0f100f4.jar)
 - [Meteor Client](https://meteorclient.com/api/download?version=1.21.5)
 
