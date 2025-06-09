@@ -4,9 +4,7 @@
   "version": "${version}",
   "name": "Axon",
   "description": "This is an example description! Tell everyone what your mod is about!",
-  "authors": [
-    "Jeremy Woolley <axon@jeremywoolley.com>"
-  ],
+  "authors": ["Jeremy Woolley <axon@jeremywoolley.com>"],
   "contact": {
     "homepage": "https://axon.jer.app",
     "sources": "https://github.com/jeremy46231/axon"
@@ -15,16 +13,10 @@
   "icon": "assets/axon/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": [
-      "app.jer.axon.Axon"
-    ],
-    "meteor": [
-      "app.jer.axon.entrypoint.MeteorEntrypoint"
-    ]
+    "client": ["app.jer.axon.Axon"],
+    "meteor": ["app.jer.axon.entrypoint.MeteorEntrypoint"]
   },
-  "mixins": [
-    "axon.mixins.json"
-  ],
+  "mixins": ["axon.mixins.json"],
   "depends": {
     "fabricloader": ">=0.16.13",
     "minecraft": "~1.21.4",

@@ -1,7 +1,7 @@
 name: build
 on: [push]
 permissions:
-    contents: write
+  contents: write
 
 jobs:
   build:
@@ -38,5 +38,3 @@ jobs:
             --prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-

@@ -3,11 +3,8 @@
   "minVersion": "0.8",
   "package": "app.jer.axon.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "MeteorClientFolderMixin"
-  ],
-  "client": [
-  ],
+  "mixins": ["MeteorClientFolderMixin"],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }
